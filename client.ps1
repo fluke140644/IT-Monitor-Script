@@ -1,5 +1,5 @@
 # Version: 1.0
-$currentVersion = "1.0.1"
+$currentVersion = "1.0"
 $serverIP = "172.30.10.169"
 $port = 5000
 $hostname = $env:COMPUTERNAME
