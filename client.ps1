@@ -1,11 +1,10 @@
-# Version: 1.0
-$currentVersion = "1.0"
+# Version: 1.0.1
+$currentVersion = "1.0.1"
 $serverIP = "172.30.10.169"
 $port = 5000
 $hostname = $env:COMPUTERNAME
 
-# ลิงก์สำหรับโหลดไฟล์โค้ดเวอร์ชันใหม่ (เช่น ลิงก์ Raw จาก GitHub)
-$updateUrl = "https://raw.githubusercontent.com/ชื่อผู้ใช้/ชื่อโปรเจกต์/main/client.ps1"
+$updateUrl = "https://raw.githubusercontent.com/fluke140644/IT-Monitor-Script/refs/heads/main/client.ps1"
 
 while ($true) {
     try {
@@ -16,16 +15,14 @@ while ($true) {
             $remoteVersion = $matches[1]
             
             if ([version]$remoteVersion -gt [version]$currentVersion) {
-                
                 $remoteScript | Out-File -FilePath $PSCommandPath -Encoding UTF8
                 
                 Start-Process powershell -ArgumentList "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSCommandPath`""
-                
                 Exit
             }
         }
-    } catch {
-    }
+    } catch { }
+    
     try {
         $tcpClient = New-Object System.Net.Sockets.TcpClient
         $result = $tcpClient.BeginConnect($serverIP, $port, $null, $null)
@@ -41,7 +38,6 @@ while ($true) {
             $stream.Close()
             $tcpClient.Close()
         }
-    } catch {}
-    
+    } catch { }
     Start-Sleep -Seconds 60
 }
