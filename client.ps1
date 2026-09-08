@@ -1,15 +1,15 @@
-﻿# Version: 1.0.3
-$currentVersion = "1.0.3"
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+# Version: 1.0.2
+$currentVersion = "1.0.2"
 $serverIP = "172.30.109.220"
 $port = 5000
 $hostname = $env:COMPUTERNAME
 
-$updateUrl = "https://raw.githubusercontent.com/fluke140644/IT-Monitor-Script/refs/heads/main/client.ps1"
-
 while ($true) {
     try {
         $random = [guid]::NewGuid().ToString()
-        $remoteScript = Invoke-RestMethod -Uri "$updateUrl?t=$random" -UseBasicParsing
+        $remoteScript = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/fluke140644/IT-Monitor-Script/refs/heads/main/client.ps1?t=$random" -UseBasicParsing
         
         if ($remoteScript -match "# Version:\s*([0-9.]+)") {
             $remoteVersion = $matches[1]
@@ -17,11 +17,13 @@ while ($true) {
             if ([version]$remoteVersion -gt [version]$currentVersion) {
                 $remoteScript | Out-File -FilePath $PSCommandPath -Encoding UTF8
                 
-                Start-Process powershell -ArgumentList "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+                Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`""
                 Exit
             }
         }
-    } catch { }
+    } catch { 
+        Write-Host "Update Error: $_" -ForegroundColor Red
+    }
     
     try {
         $tcpClient = New-Object System.Net.Sockets.TcpClient
@@ -39,6 +41,6 @@ while ($true) {
             $tcpClient.Close()
         }
     } catch { }
+    
     Start-Sleep -Seconds 30
 }
-
