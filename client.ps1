@@ -1,7 +1,7 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-# Version: 1.0.2
-$currentVersion = "1.0.2"
+# Version: 1.0.3
+$currentVersion = "1.0.3"
 $serverIP = "172.30.109.220"
 $port = 5000
 $hostname = $env:COMPUTERNAME
