@@ -1,6 +1,6 @@
-# Version: 1.0.1
-$currentVersion = "1.0.1"
-$serverIP = "172.30.10.169"
+# Version: 1.0.2
+$currentVersion = "1.0.2"
+$serverIP = "172.30.109.220"
 $port = 5000
 $hostname = $env:COMPUTERNAME
 
@@ -39,5 +39,5 @@ while ($true) {
             $tcpClient.Close()
         }
     } catch { }
-    Start-Sleep -Seconds 60
+    Start-Sleep -Seconds 30
 }
