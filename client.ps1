@@ -1,7 +1,7 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;
 
-# Version: 1.0.5
-$currentVersion = "1.0.5";
+# Version: 1.0.6
+$currentVersion = "1.0.6";
 $serverIP = "172.30.109.220";
 $port = 5000;
 $hostname =$env:COMPUTERNAME;
@@ -15,7 +15,8 @@ while ($true) {
             $remoteVersion =$matches[1];
             
             if ([version]$remoteVersion -gt [version]$currentVersion) {
-                Set-Content -Path $PSCommandPath -Value$remoteScript -Encoding UTF8;
+                # ใช้วิธีเขียนไฟล์แบบ .NET เพื่อป้องกันปัญหาช่องว่างหายตอนก๊อปปี้
+                [System.IO.File]::WriteAllText($PSCommandPath,$remoteScript, [System.Text.Encoding]::UTF8);
                 
                 Start-Process powershell -ArgumentList "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSCommandPath`"";
                 Exit;
