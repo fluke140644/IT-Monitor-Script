@@ -1,7 +1,7 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;
 
-# Version: 1.0.7
-$currentVersion = "1.0.7";
+# Version: 1.0.8
+$currentVersion = "1.0.8";
 $serverIP = "172.30.109.220";
 $port = 5000;
 $hostname =$env:COMPUTERNAME;
@@ -15,7 +15,6 @@ while ($true) {
             $remoteVersion =$matches[1];
             
             if ([version]$remoteVersion -gt [version]$currentVersion) {
-                # ใช้วิธีเขียนไฟล์แบบ .NET เพื่อป้องกันปัญหาช่องว่างหายตอนก๊อปปี้
                 [System.IO.File]::WriteAllText($PSCommandPath,$remoteScript, [System.Text.Encoding]::UTF8);
                 
                 Start-Process powershell -ArgumentList "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSCommandPath`"";
@@ -28,7 +27,7 @@ while ($true) {
     
     try {
         $vncService = Get-Service -Name "tvnserver" -ErrorAction SilentlyContinue;
-        $hasVNC = if ($vncService -and$vncService.Status -eq 'Running') { "VNC:ON" } 
+        $hasVNC = if ($vncService -and ($vncService.Status -eq 'Running')) { "VNC:ON" } 
                   elseif ($vncService) { "VNC:Stop" } 
                   else { "VNC:No" };
 
@@ -36,7 +35,7 @@ while ($true) {
         $anydeskProcess = Get-Process -Name "AnyDesk" -ErrorAction SilentlyContinue;
         $anydeskPath = (Test-Path "${env:ProgramFiles(x86)}\AnyDesk\AnyDesk.exe") -or (Test-Path "$env:ProgramFiles\AnyDesk\AnyDesk.exe");
 
-        $hasAnyDesk = if (($anydeskService -and $anydeskService.Status -eq 'Running') -or$anydeskProcess) { "AD:ON" }
+        $hasAnyDesk = if (($anydeskService -and ($anydeskService.Status -eq 'Running')) -or$anydeskProcess) { "AD:ON" }
                       elseif ($anydeskService -or$anydeskPath) { "AD:Stop" }
                       else { "AD:No" };
 
@@ -46,7 +45,6 @@ while ($true) {
         $result = $tcpClient.BeginConnect($serverIP, $port,$null, $null);$success = $result.AsyncWaitHandle.WaitOne(3000,$true);
 
         if ($success) {$tcpClient.EndConnect($result);$stream = $tcpClient.GetStream();$bytes = [System.Text.Encoding]::UTF8.GetBytes($payload);$stream.Write($bytes, 0,$bytes.Length);
-            
             $stream.Close();$tcpClient.Close();
         }
     } catch { }
